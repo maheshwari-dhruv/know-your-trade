@@ -1,7 +1,9 @@
 package org.blog.knowyourtrade.integration.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.blog.knowyourtrade.dao.dto.PostDTO;
 import org.blog.knowyourtrade.dao.entity.Post;
+import org.blog.knowyourtrade.domain.dto.request.PostRequest;
 import org.blog.knowyourtrade.domain.enums.ErrorCode;
 import org.blog.knowyourtrade.domain.exception.ServiceException;
 import org.blog.knowyourtrade.integration.PostDBClient;
@@ -9,9 +11,11 @@ import org.blog.knowyourtrade.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @Component
@@ -64,5 +68,25 @@ public class PostDBClientImpl implements PostDBClient {
         } catch (Exception e) {
             throw new ServiceException(e.getMessage(), ErrorCode.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @Override
+    public Post addPostRecord(PostRequest postRequest) {
+        try {
+            return postRepository.save(mapRequestToDAO(postRequest));
+        } catch (Exception e) {
+            throw new ServiceException(e.getMessage(), ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private Post mapRequestToDAO(PostRequest postRequest) {
+        return Post.builder()
+                .postId(String.valueOf(UUID.randomUUID()))
+                .postTitle(postRequest.getTitle())
+                .postContent(postRequest.getContent())
+                .category(postRequest.getCategory())
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
     }
 }

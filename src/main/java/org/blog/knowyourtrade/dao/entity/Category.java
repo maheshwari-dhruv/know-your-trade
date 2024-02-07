@@ -20,7 +20,7 @@ public class Category {
     private Long categoryId;
 
     @Column(name = "category_name", nullable = false)
-    private Long categoryName;
+    private String categoryName;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;

@@ -2,6 +2,7 @@ package org.blog.knowyourtrade.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.blog.knowyourtrade.dao.entity.Category;
+import org.blog.knowyourtrade.domain.dto.request.CategoryRequest;
 import org.blog.knowyourtrade.integration.CategoryDBClient;
 import org.blog.knowyourtrade.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,5 +20,10 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<Category> fetchAllCategoriesFromDB() {
         return categoryDBClient.getAllCategory();
+    }
+
+    @Override
+    public Category insertCategoryRecordInDB(CategoryRequest categoryRequest) {
+        return categoryDBClient.addCategoryRecord(categoryRequest);
     }
 }
