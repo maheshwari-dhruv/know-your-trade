@@ -8,7 +8,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.blog.knowyourtrade.domain.enums.ErrorCode;
 import org.blog.knowyourtrade.domain.exception.ServiceException;
-import org.blog.knowyourtrade.util.LogUtils;
 import org.blog.knowyourtrade.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,18 +16,17 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Objects;
 
 @Slf4j
 @Aspect
 @Component
 public class MonitorAspect {
 
-    private static final String REQUEST_NAME = "know-your-trades-request";
-    private static final String TIMER_NAME = "know-your-trades-timers";
+//    private static final String REQUEST_NAME = "know-your-trades-request";
+//    private static final String TIMER_NAME = "know-your-trades-timers";
 
-    @Autowired
-    private MeterRegistry meterRegistry;
+//    @Autowired
+//    private MeterRegistry meterRegistry;
 
     @Around("@annotation(org.blog.knowyourtrade.aop.Monitor)")
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -80,13 +78,13 @@ public class MonitorAspect {
                 reason = ErrorCode.SUCCESS.getErrorMessage();
             }
 
-            if (monitorMethod.requests()) {
-                meterRegistry.counter(REQUEST_NAME, "name", name, "monitor", monitorType, "status", status, "reason", reason).increment();
-            }
-
-            if (monitorMethod.timer()) {
-                meterRegistry.timer(TIMER_NAME, "name", name, "monitor", monitorType, "status", status, "reason", reason).record(between);
-            }
+//            if (monitorMethod.requests()) {
+//                meterRegistry.counter(REQUEST_NAME, "name", name, "monitor", monitorType, "status", status, "reason", reason).increment();
+//            }
+//
+//            if (monitorMethod.timer()) {
+//                meterRegistry.timer(TIMER_NAME, "name", name, "monitor", monitorType, "status", status, "reason", reason).record(between);
+//            }
 
             StringBuilder argsBuilder = new StringBuilder();
             StringBuilder resBuilder = new StringBuilder();
