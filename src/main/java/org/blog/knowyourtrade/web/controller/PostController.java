@@ -22,13 +22,13 @@ public class PostController {
     }
 
     // 2. GET SINGLE POSTS
-    @GetMapping("/{postId}")
+    @GetMapping("/individual/{postId}")
     public ResponseEntity<GenericResponse<?>> fetchIndividualPost(@PathVariable("postId") String postId) {
         return new ResponseEntity<>(GenericResponse.success(postService.fetchIndividualPostFromDB(postId)), HttpStatus.OK);
     }
 
     // 3. GET ALL POSTS BASED ON CATEGORY
-    @GetMapping("/all/{category}")
+    @GetMapping("/category/{category}")
     public ResponseEntity<GenericResponse<?>> fetchAllPostsBasedOnCategory(@PathVariable("category") String category) {
         return new ResponseEntity<>(GenericResponse.success(postService.fetchAllPostsBasedOnCategoryFromDB(category)), HttpStatus.OK);
     }
@@ -37,5 +37,17 @@ public class PostController {
     @PostMapping("/add")
     public ResponseEntity<GenericResponse<?>> insertPostRecord(@RequestBody PostRequest postRequest) {
         return new ResponseEntity<>(GenericResponse.success(postService.insertPostRecordInDB(postRequest)), HttpStatus.OK);
+    }
+
+    // 5. UPDATE RECORD IN DB
+    @PutMapping("/update/{postId}")
+    public ResponseEntity<GenericResponse<?>> updatePostRecord(@PathVariable("postId") String postId, @RequestBody PostRequest postRequest) {
+        return new ResponseEntity<>(GenericResponse.success(postService.updatePostRecordInDB(postId, postRequest)), HttpStatus.OK);
+    }
+
+    // 6. DELETE RECORD FROM DB
+    @DeleteMapping("/delete/{postId}")
+    public ResponseEntity<GenericResponse<?>> deletePostByID(@PathVariable("postId") String postId) {
+        return new ResponseEntity<>(GenericResponse.success(postService.deletePostByIDFromDB(postId)), HttpStatus.OK);
     }
 }

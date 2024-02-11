@@ -1,6 +1,5 @@
 package org.blog.knowyourtrade.aop;
 
-import io.micrometer.core.instrument.MeterRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -9,7 +8,6 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.blog.knowyourtrade.domain.enums.ErrorCode;
 import org.blog.knowyourtrade.domain.exception.ServiceException;
 import org.blog.knowyourtrade.util.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.InvocationHandler;
@@ -21,12 +19,6 @@ import java.time.Instant;
 @Aspect
 @Component
 public class MonitorAspect {
-
-//    private static final String REQUEST_NAME = "know-your-trades-request";
-//    private static final String TIMER_NAME = "know-your-trades-timers";
-
-//    @Autowired
-//    private MeterRegistry meterRegistry;
 
     @Around("@annotation(org.blog.knowyourtrade.aop.Monitor)")
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -60,31 +52,19 @@ public class MonitorAspect {
             Duration between = Duration.between(startTime, endTime);
             Object[] args = joinPoint.getArgs();
 
-            String status = null;
             String reason = null;
             if (throwable != null) {
                 if (throwable instanceof ServiceException) {
                     ErrorCode errorCode = ((ServiceException) throwable).getErrorCode();
                     if (errorCode != null) {
-                        status = errorCode.getErrorCode();
                         reason = errorCode.getErrorMessage();
                     }
                 } else {
-                    status = ErrorCode.UNKNOWN_EXCEPTION.getErrorCode();
                     reason = ErrorCode.UNKNOWN_EXCEPTION.getErrorMessage();
                 }
             } else {
-                status = ErrorCode.SUCCESS.getErrorCode();
                 reason = ErrorCode.SUCCESS.getErrorMessage();
             }
-
-//            if (monitorMethod.requests()) {
-//                meterRegistry.counter(REQUEST_NAME, "name", name, "monitor", monitorType, "status", status, "reason", reason).increment();
-//            }
-//
-//            if (monitorMethod.timer()) {
-//                meterRegistry.timer(TIMER_NAME, "name", name, "monitor", monitorType, "status", status, "reason", reason).record(between);
-//            }
 
             StringBuilder argsBuilder = new StringBuilder();
             StringBuilder resBuilder = new StringBuilder();
