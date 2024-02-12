@@ -1,12 +1,10 @@
 package org.blog.knowyourtrade.integration.impl;
 
 import lombok.extern.slf4j.Slf4j;
-//import org.blog.knowyourtrade.aop.Monitor;
 import org.blog.knowyourtrade.dao.entity.Post;
 import org.blog.knowyourtrade.domain.dto.request.PostRequest;
 import org.blog.knowyourtrade.domain.dto.response.BlogResponse;
 import org.blog.knowyourtrade.domain.enums.ErrorCode;
-//import org.blog.knowyourtrade.domain.enums.MonitorType;
 import org.blog.knowyourtrade.domain.exception.ServiceException;
 import org.blog.knowyourtrade.integration.PostDBClient;
 import org.blog.knowyourtrade.repository.PostRepository;
@@ -21,14 +19,12 @@ import java.util.UUID;
 
 @Slf4j
 @Component
-//@Monitor(monitor = MonitorType.DATABASE)
 public class PostDBClientImpl implements PostDBClient {
 
     @Autowired
     private PostRepository postRepository;
 
     @Override
-//    @Monitor("getAllPostsFromDB")
     public List<Post> getAllPostsFromDB() {
         try {
             List<Post> allPosts = postRepository.findAll();
@@ -47,7 +43,6 @@ public class PostDBClientImpl implements PostDBClient {
     }
 
     @Override
-//    @Monitor("getIndividualPostById")
     public List<Post> getIndividualPostById(String postId) {
         try {
             List<Post> postResult = postRepository.findById(postId).stream().toList();
@@ -66,7 +61,6 @@ public class PostDBClientImpl implements PostDBClient {
     }
 
     @Override
-//    @Monitor("getAllPostsByCategory")
     public List<Post> getAllPostsByCategory(String category) {
         try {
             List<Post> categoryResult = postRepository.findAllByCategory(category);
@@ -85,7 +79,6 @@ public class PostDBClientImpl implements PostDBClient {
     }
 
     @Override
-//    @Monitor("addPostRecord")
     public Post addPostRecord(PostRequest postRequest) {
         try {
             Post savedPost = postRepository.save(mapRequestToDAO(postRequest));
@@ -102,9 +95,19 @@ public class PostDBClientImpl implements PostDBClient {
     @Override
     public BlogResponse deleteRecordFromDB(String postId) {
         try {
-            postRepository.deleteById(postId);
+            List<Post> postFound = postRepository.findById(postId).stream().toList();
+
+            if (postFound.isEmpty()) {
+                log.warn("No Post found by ID: {}", postId);
+                return BlogResponse.builder()
+                        .code(HttpStatus.NOT_FOUND.value())
+                        .message("No Post found by ID: {}" + postId)
+                        .status("NOT FOUND")
+                        .build();
+            }
 
             log.debug("Post Found by ID: {}", postId);
+            postRepository.deleteById(postId);
             return BlogResponse.builder()
                     .code(HttpStatus.OK.value())
                     .message("Successfully deleted record from db")

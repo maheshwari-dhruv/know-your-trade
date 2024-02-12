@@ -15,9 +15,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class Category {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "category_id", nullable = false)
-    private Long categoryId;
+    private String categoryId;
 
     @Column(name = "category_name", nullable = false)
     private String categoryName;

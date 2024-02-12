@@ -2,7 +2,6 @@ package org.blog.knowyourtrade.web.controller;
 
 import org.blog.knowyourtrade.domain.dto.base.GenericResponse;
 import org.blog.knowyourtrade.domain.dto.request.CategoryRequest;
-import org.blog.knowyourtrade.domain.dto.request.PostRequest;
 import org.blog.knowyourtrade.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,5 +25,17 @@ public class CategoryController {
     @PostMapping("/add")
     public ResponseEntity<GenericResponse<?>> insertCategoryRecord(@RequestBody CategoryRequest categoryRequest) {
         return new ResponseEntity<>(GenericResponse.success(categoryService.insertCategoryRecordInDB(categoryRequest)), HttpStatus.OK);
+    }
+
+    // 3. UPDATE CATEGORY
+    @PutMapping("/update/{categoryId}")
+    public ResponseEntity<GenericResponse<?>> updateCategoryRecord(@PathVariable("categoryId") String categoryId, @RequestBody CategoryRequest categoryRequest) {
+        return new ResponseEntity<>(GenericResponse.success(categoryService.updateCategoryRecordInDB(categoryId, categoryRequest)), HttpStatus.OK);
+    }
+
+    // 4. DELETE CATEGORY
+    @DeleteMapping("/delete/{categoryId}")
+    public ResponseEntity<GenericResponse<?>> deleteCategoryByID(@PathVariable("categoryId") String categoryId) {
+        return new ResponseEntity<>(GenericResponse.success(categoryService.deleteCategoryByIDFromDB(categoryId)), HttpStatus.OK);
     }
 }
