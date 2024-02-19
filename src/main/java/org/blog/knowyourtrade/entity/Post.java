@@ -1,4 +1,4 @@
-package org.blog.knowyourtrade.dao.entity;
+package org.blog.knowyourtrade.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class Post {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "post_id", nullable = false)
     private String postId;
 

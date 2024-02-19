@@ -1,19 +1,19 @@
 package org.blog.knowyourtrade.service;
 
-import org.blog.knowyourtrade.dao.entity.Post;
+import org.blog.knowyourtrade.entity.Post;
 import org.blog.knowyourtrade.domain.dto.request.PostRequest;
 import org.blog.knowyourtrade.domain.dto.response.BlogResponse;
 
 import java.util.List;
 
 public interface PostService {
-    List<Post> fetchAllPostsFromDB();
+    BlogResponse fetchAllPostsFromDB();
 
-    List<Post> fetchIndividualPostFromDB(String postId);
+    BlogResponse fetchIndividualPostFromDB(String postId);
 
-    List<Post> fetchAllPostsBasedOnCategoryFromDB(String category);
+    BlogResponse fetchAllPostsBasedOnCategoryFromDB(String category);
 
-    Post insertPostRecordInDB(PostRequest postRequest);
+    BlogResponse insertPostRecordInDB(PostRequest postRequest);
 
     BlogResponse deletePostByIDFromDB(String postId);
 

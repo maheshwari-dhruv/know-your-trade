@@ -1,6 +1,9 @@
 package org.blog.knowyourtrade.domain.dto.response;
 
 import lombok.*;
+import org.blog.knowyourtrade.domain.dto.mapper.PostDTO;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -9,7 +12,5 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BlogResponse {
-    private String message;
-    private int code;
-    private String status;
+    private List<PostDTO> postDTO;
 }

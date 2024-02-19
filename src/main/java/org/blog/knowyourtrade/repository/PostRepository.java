@@ -1,7 +1,7 @@
 package org.blog.knowyourtrade.repository;
 
 import jakarta.transaction.Transactional;
-import org.blog.knowyourtrade.dao.entity.Post;
+import org.blog.knowyourtrade.entity.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

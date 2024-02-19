@@ -1,4 +1,4 @@
-package org.blog.knowyourtrade.dao.dto;
+package org.blog.knowyourtrade.domain.dto.mapper;
 
 import lombok.*;
 
@@ -15,6 +15,6 @@ public class PostDTO {
     private String postTitle;
     private String postContent;
     private String category;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private String createdAt;
+    private String updatedAt;
 }

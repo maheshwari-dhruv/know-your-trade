@@ -1,15 +1,13 @@
 package org.blog.knowyourtrade.integration.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.blog.knowyourtrade.dao.entity.Post;
+import org.blog.knowyourtrade.entity.Post;
 import org.blog.knowyourtrade.domain.dto.request.PostRequest;
-import org.blog.knowyourtrade.domain.dto.response.BlogResponse;
 import org.blog.knowyourtrade.domain.enums.ErrorCode;
 import org.blog.knowyourtrade.domain.exception.ServiceException;
 import org.blog.knowyourtrade.integration.PostDBClient;
 import org.blog.knowyourtrade.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -79,13 +77,13 @@ public class PostDBClientImpl implements PostDBClient {
     }
 
     @Override
-    public Post addPostRecord(PostRequest postRequest) {
+    public List<Post> addPostRecord(PostRequest postRequest) {
         try {
             Post savedPost = postRepository.save(mapRequestToDAO(postRequest));
 
             log.info("Post Saved with ID: {}", savedPost.getPostId());
             log.debug("SavedPost: {}", savedPost);
-            return savedPost;
+            return List.of(savedPost);
         } catch (Exception e) {
             log.error("Error saving posts in db (addPostRecord): {}", e.getMessage());
             throw new ServiceException(e.getMessage(), ErrorCode.INTERNAL_SERVER_ERROR);
@@ -93,26 +91,18 @@ public class PostDBClientImpl implements PostDBClient {
     }
 
     @Override
-    public BlogResponse deleteRecordFromDB(String postId) {
+    public List<Post> deleteRecordFromDB(String postId) {
         try {
             List<Post> postFound = postRepository.findById(postId).stream().toList();
 
             if (postFound.isEmpty()) {
                 log.warn("No Post found by ID: {}", postId);
-                return BlogResponse.builder()
-                        .code(HttpStatus.NOT_FOUND.value())
-                        .message("No Post found by ID: {}" + postId)
-                        .status("NOT FOUND")
-                        .build();
+                return new ArrayList<>();
             }
 
             log.debug("Post Found by ID: {}", postId);
             postRepository.deleteById(postId);
-            return BlogResponse.builder()
-                    .code(HttpStatus.OK.value())
-                    .message("Successfully deleted record from db")
-                    .status("SUCCESS")
-                    .build();
+            return postFound;
         } catch (Exception e) {
             log.error("Error fetching posts from db (deleteRecordFromDB): {}", e.getMessage());
             throw new ServiceException(e.getMessage(), ErrorCode.INTERNAL_SERVER_ERROR);
@@ -120,29 +110,42 @@ public class PostDBClientImpl implements PostDBClient {
     }
 
     @Override
-    public BlogResponse updatePostInDB(String postId, PostRequest postRequest) {
+    public List<Post> updatePostInDB(String postId, PostRequest postRequest) {
         try {
-            int postResult = postRepository.updatePost(postRequest.getTitle(), postRequest.getContent(), postRequest.getCategory(), LocalDateTime.now(), postId);
+            List<Post> postFound = postRepository.findById(postId).stream().toList();
+
+            if (postFound.isEmpty()) {
+                log.warn("No Post found by ID: {}", postId);
+                return new ArrayList<>();
+            }
+
+            log.debug("Post Found by ID: {}", postId);
+            Post post = mappedToUpdatedDAO(postFound, postRequest);
+
+            int postResult = postRepository.updatePost(post.getPostTitle(), post.getPostContent(), post.getCategory(), post.getUpdatedAt(), post.getPostId());
 
             if (postResult == 0) {
                 log.debug("No Post updated for ID: {}", postId);
-                return BlogResponse.builder()
-                        .code(postResult)
-                        .message("No Post updated for ID: " + postId)
-                        .status("SUCCESS")
-                        .build();
+                return new ArrayList<>();
             }
 
             log.debug("Post Updated for ID: {}", postId);
-            return BlogResponse.builder()
-                    .code(postResult)
-                    .message("Post Updated for ID: " + postId)
-                    .status("SUCCESS")
-                    .build();
+            return List.of(post);
         } catch (Exception e) {
             log.error("Error fetching posts from db (updatePostInDB): {}", e.getMessage());
             throw new ServiceException(e.getMessage(), ErrorCode.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    private Post mappedToUpdatedDAO(List<Post> postFound, PostRequest postRequest) {
+        return Post.builder()
+                .postId(postFound.get(0).getPostId())
+                .postTitle(postRequest.getTitle())
+                .postContent(postRequest.getContent())
+                .category(postRequest.getCategory())
+                .createdAt(postFound.get(0).getCreatedAt())
+                .updatedAt(LocalDateTime.now())
+                .build();
     }
 
     private Post mapRequestToDAO(PostRequest postRequest) {

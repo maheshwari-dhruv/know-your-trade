@@ -2,7 +2,6 @@ package org.blog.knowyourtrade.web.handlers;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.connector.ClientAbortException;
 import org.blog.knowyourtrade.domain.dto.base.GenericResponse;
 import org.blog.knowyourtrade.domain.enums.ErrorCode;
 import org.blog.knowyourtrade.domain.exception.ApiException;
@@ -89,20 +88,6 @@ public class AppExceptionHandler {
             new GenericResponse<>("request " + e.getApiName() + " api failed, message: " + e.getMessage(), ErrorCode.API_ERROR),
             headers,
             ErrorCode.API_ERROR.getHttpCode()
-    );
-  }
-
-  @ExceptionHandler({ClientAbortException.class})
-  public ResponseEntity<Object> handleClientAbortException(HttpServletRequest request, ClientAbortException e) {
-    log.error("Client Abort Exception: {} | url: {}", e.getMessage(), request.getRequestURL());
-
-    HttpHeaders headers = new HttpHeaders();
-    headers.add(HEADER_NAME, TraceIdProvider.getTraceId());
-
-    return new ResponseEntity<>(
-            new GenericResponse<>(e.getMessage(), ErrorCode.INTERNAL_SERVER_ERROR),
-            headers,
-            HttpStatus.INTERNAL_SERVER_ERROR
     );
   }
 
