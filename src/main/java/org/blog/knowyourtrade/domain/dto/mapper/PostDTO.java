@@ -2,8 +2,6 @@ package org.blog.knowyourtrade.domain.dto.mapper;
 
 import lombok.*;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Setter
 @ToString

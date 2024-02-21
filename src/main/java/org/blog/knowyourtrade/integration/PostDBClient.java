@@ -2,7 +2,6 @@ package org.blog.knowyourtrade.integration;
 
 import org.blog.knowyourtrade.entity.Post;
 import org.blog.knowyourtrade.domain.dto.request.PostRequest;
-import org.blog.knowyourtrade.domain.dto.response.BlogResponse;
 
 import java.util.List;
 
