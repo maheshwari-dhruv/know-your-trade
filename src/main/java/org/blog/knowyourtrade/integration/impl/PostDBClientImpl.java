@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 
@@ -149,13 +150,20 @@ public class PostDBClientImpl implements PostDBClient {
     }
 
     private Post mapRequestToDAO(PostRequest postRequest) {
+        String content = decodeBase64String(postRequest.getContent());
+
         return Post.builder()
                 .postId(String.valueOf(UUID.randomUUID()))
                 .postTitle(postRequest.getTitle())
-                .postContent(postRequest.getContent())
+                .postContent(content)
                 .category(postRequest.getCategory())
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
+    }
+
+    private String decodeBase64String(String content) {
+        byte[] decodedBytes = Base64.getDecoder().decode(content);
+        return new String(decodedBytes);
     }
 }

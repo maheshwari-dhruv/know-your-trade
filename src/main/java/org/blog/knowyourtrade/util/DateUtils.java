@@ -9,8 +9,6 @@ import java.time.format.DateTimeFormatter;
 public class DateUtils {
 
     public static String formatPostDate(LocalDateTime date) {
-        String formattedDate = date.format(DateTimeFormatter.ofPattern("MMMM dd, yyyy"));
-        log.debug("Formatted Date: " + formattedDate);
-        return formattedDate;
+        return date.format(DateTimeFormatter.ofPattern("MMMM dd, yyyy"));
     }
 }
