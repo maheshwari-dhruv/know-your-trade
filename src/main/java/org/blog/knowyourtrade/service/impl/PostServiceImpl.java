@@ -43,16 +43,6 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public BlogResponse fetchAllPostsBasedOnCategoryFromDB(String category) {
-        log.info("Fetch All Post From DB By Category");
-        log.debug("Category received: {}", category.toLowerCase());
-        List<Post> allPostsByCategory = postDBClient.getAllPostsByCategory(category.toLowerCase());
-        return BlogResponse.builder()
-                .postDTO(mappedPostToPostDTO(allPostsByCategory))
-                .build();
-    }
-
-    @Override
     public BlogResponse insertPostRecordInDB(PostRequest postRequest) {
         log.info("Insert Post Into DB");
         log.debug("Request received: {}", postRequest);

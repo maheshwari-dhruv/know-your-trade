@@ -10,6 +10,8 @@ import org.blog.knowyourtrade.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -25,6 +27,7 @@ public class PostDBClientImpl implements PostDBClient {
 
     @Override
     public List<Post> getAllPostsFromDB() {
+        Instant startTime = Instant.now();
         try {
             List<Post> allPosts = postRepository.findAll();
             log.debug("All Posts size: {}", allPosts.size());
@@ -38,11 +41,16 @@ public class PostDBClientImpl implements PostDBClient {
         } catch (Exception e) {
             log.error("Error fetching posts from db (getAllPostsFromDB): {}", e.getMessage());
             throw new ServiceException(e.getMessage(), ErrorCode.INTERNAL_SERVER_ERROR);
+        } finally {
+            Instant endTime = Instant.now();
+            Duration duration = Duration.between(startTime, endTime);
+            log.debug("Time taken to fetch posts: {} milliseconds", duration.toMillis());
         }
     }
 
     @Override
     public List<Post> getIndividualPostById(String postId) {
+        Instant startTime = Instant.now();
         try {
             List<Post> postResult = postRepository.findById(postId).stream().toList();
 
@@ -56,29 +64,16 @@ public class PostDBClientImpl implements PostDBClient {
         } catch (Exception e) {
             log.error("Error fetching posts from db (getIndividualPostById): {}", e.getMessage());
             throw new ServiceException(e.getMessage(), ErrorCode.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @Override
-    public List<Post> getAllPostsByCategory(String category) {
-        try {
-            List<Post> categoryResult = postRepository.findAllByCategory(category);
-
-            if (categoryResult.isEmpty()) {
-                log.debug("No Posts found by Category: {}", category);
-                return new ArrayList<>();
-            }
-
-            log.debug("Total Posts Found by Category: {}", categoryResult.size());
-            return categoryResult;
-        } catch (Exception e) {
-            log.error("Error fetching posts from db (getAllPostsByCategory): {}", e.getMessage());
-            throw new ServiceException(e.getMessage(), ErrorCode.INTERNAL_SERVER_ERROR);
+        } finally {
+            Instant endTime = Instant.now();
+            Duration duration = Duration.between(startTime, endTime);
+            log.debug("Time taken to fetch posts: {} milliseconds", duration.toMillis());
         }
     }
 
     @Override
     public List<Post> addPostRecord(PostRequest postRequest) {
+        Instant startTime = Instant.now();
         try {
             Post savedPost = postRepository.save(mapRequestToDAO(postRequest));
 
@@ -88,11 +83,16 @@ public class PostDBClientImpl implements PostDBClient {
         } catch (Exception e) {
             log.error("Error saving posts in db (addPostRecord): {}", e.getMessage());
             throw new ServiceException(e.getMessage(), ErrorCode.INTERNAL_SERVER_ERROR);
+        } finally {
+            Instant endTime = Instant.now();
+            Duration duration = Duration.between(startTime, endTime);
+            log.debug("Time taken to fetch posts: {} milliseconds", duration.toMillis());
         }
     }
 
     @Override
     public List<Post> deleteRecordFromDB(String postId) {
+        Instant startTime = Instant.now();
         try {
             List<Post> postFound = postRepository.findById(postId).stream().toList();
 
@@ -107,11 +107,16 @@ public class PostDBClientImpl implements PostDBClient {
         } catch (Exception e) {
             log.error("Error fetching posts from db (deleteRecordFromDB): {}", e.getMessage());
             throw new ServiceException(e.getMessage(), ErrorCode.INTERNAL_SERVER_ERROR);
+        } finally {
+            Instant endTime = Instant.now();
+            Duration duration = Duration.between(startTime, endTime);
+            log.debug("Time taken to fetch posts: {} milliseconds", duration.toMillis());
         }
     }
 
     @Override
     public List<Post> updatePostInDB(String postId, PostRequest postRequest) {
+        Instant startTime = Instant.now();
         try {
             List<Post> postFound = postRepository.findById(postId).stream().toList();
 
@@ -135,6 +140,10 @@ public class PostDBClientImpl implements PostDBClient {
         } catch (Exception e) {
             log.error("Error fetching posts from db (updatePostInDB): {}", e.getMessage());
             throw new ServiceException(e.getMessage(), ErrorCode.INTERNAL_SERVER_ERROR);
+        } finally {
+            Instant endTime = Instant.now();
+            Duration duration = Duration.between(startTime, endTime);
+            log.debug("Time taken to fetch posts: {} milliseconds", duration.toMillis());
         }
     }
 

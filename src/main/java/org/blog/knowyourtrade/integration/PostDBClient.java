@@ -10,8 +10,6 @@ public interface PostDBClient {
 
     List<Post> getIndividualPostById(String postId);
 
-    List<Post> getAllPostsByCategory(String category);
-
     List<Post> addPostRecord(PostRequest postRequest);
 
     List<Post> deleteRecordFromDB(String postId);

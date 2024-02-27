@@ -8,8 +8,6 @@ public interface PostService {
 
     BlogResponse fetchIndividualPostFromDB(String postId);
 
-    BlogResponse fetchAllPostsBasedOnCategoryFromDB(String category);
-
     BlogResponse insertPostRecordInDB(PostRequest postRequest);
 
     BlogResponse deletePostByIDFromDB(String postId);
